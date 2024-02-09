@@ -10,25 +10,30 @@ import { createCourse, getAllCoursesService } from "../services/courseService";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
+import axios from "axios";
 
 // Upload new course
 export const uploadCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = req.body;
-      const thumbnail = data.thumbnail;
-      const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
-        folder: "courses",
-      });
 
-      data.thumbnail = {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      };
+      const thumbnail = data.thumbnail;
+
+      if (thumbnail) {
+        const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
+          folder: "courses",
+        });
+
+        data.thumbnail = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
+      }
 
       createCourse(data, res, next);
     } catch (error: any) {
-      return next(new ErrorHandler(error.message, 400));
+      return next(new ErrorHandler(error.message, 500));
     }
   }
 );
@@ -432,6 +437,31 @@ export const deleteCourse = catchAsyncErrors(
         success: true,
         message: "Course Deleted Successfully",
       });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Generate Video Url
+export const generateVideoUrl = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { videoId } = req.body;
+
+      const response = await axios.post(
+        `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+        { ttl: 300 },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Apisecret ${process.env.VDOCIPHER_API_SECRET}`,
+          },
+        }
+      );
+
+      res.json(response.data);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

@@ -1,10 +1,14 @@
 import { styles } from "@/app/styles/style";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
-import { useUpdateAvatarMutation } from "@/redux/features/user/userApi";
+import {
+  useEditProfileMutation,
+  useUpdateAvatarMutation,
+} from "@/redux/features/user/userApi";
 import Image from "next/image";
 import React from "react";
 import { AiOutlineCamera } from "react-icons/ai";
 import avatarDefault from "../../../public/assets/Profile.png";
+import toast from "react-hot-toast";
 
 type Props = {
   user: any;
@@ -14,6 +18,8 @@ type Props = {
 const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
   const [name, setName] = React.useState(user && user.name);
   const [updateAvatar, { isSuccess, error }] = useUpdateAvatarMutation();
+  const [editProfile, { isSuccess: success, error: updateError }] =
+    useEditProfileMutation();
   const [loadUser, setLoadUser] = React.useState(false);
   const {} = useLoadUserQuery(undefined, {
     skip: loadUser ? false : true,
@@ -33,16 +39,26 @@ const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
   };
 
   React.useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || success) {
       setLoadUser(true);
     }
-    if (error) {
+    if (error || updateError) {
       console.log(error);
     }
-  }, [error, isSuccess]);
+
+    if (success) {
+      toast.success("Profile Updated Successfully.");
+    }
+  }, [error, isSuccess, success, updateError]);
 
   const handleSubmit = async (e: any) => {
-    console.log("Handle Submit");
+    e.preventDefault();
+
+    if (name !== "") {
+      await editProfile({
+        name: name,
+      });
+    }
   };
 
   return (
@@ -50,7 +66,9 @@ const ProfileInfo: React.FC<Props> = ({ user, avatar }) => {
       <div className="w-full flex justify-center">
         <div className="relative">
           <Image
-            src={user.avatar || avatar ? user.avatar.url || avatar : avatarDefault}
+            src={
+              user.avatar || avatar ? user.avatar.url || avatar : avatarDefault
+            }
             alt="Profile Photo"
             width={120}
             height={120}
