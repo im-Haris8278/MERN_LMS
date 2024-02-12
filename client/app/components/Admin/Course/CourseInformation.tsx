@@ -1,5 +1,6 @@
 import { styles } from "@/app/styles/style";
-import React, { FC, useState } from "react";
+import { useGetHeroDataQuery } from "@/redux/features/layout/layoutApi";
+import React, { FC, useEffect, useState } from "react";
 
 type Props = {
   courseInfo: any;
@@ -15,16 +16,22 @@ const CourseInformation: FC<Props> = ({
   setActive,
 }) => {
   const [dragging, setDragging] = useState(false);
+  const { data } = useGetHeroDataQuery("Categories", {});
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (data) {
+      setCategories(data.layout.categories);
+    }
+  }, [data]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-
     setActive(active + 1);
   };
 
   const handleFileChange = (e: any) => {
     const file = e.target.files?.[0];
-
     if (file) {
       const reader = new FileReader();
 
@@ -33,26 +40,22 @@ const CourseInformation: FC<Props> = ({
           setCourseInfo({ ...courseInfo, thumbnail: reader.result });
         }
       };
-
       reader.readAsDataURL(file);
     }
   };
 
   const handleDragOver = (e: any) => {
     e.preventDefault();
-
     setDragging(true);
   };
 
   const handleDragLeave = (e: any) => {
     e.preventDefault();
-
     setDragging(false);
   };
 
   const handleDrop = (e: any) => {
     e.preventDefault();
-
     setDragging(false);
 
     const file = e.dataTransfer.files?.[0];
@@ -63,7 +66,6 @@ const CourseInformation: FC<Props> = ({
       reader.onload = () => {
         setCourseInfo({ ...courseInfo, thumbnail: reader.result });
       };
-
       reader.readAsDataURL(file);
     }
   };
@@ -82,8 +84,9 @@ const CourseInformation: FC<Props> = ({
               setCourseInfo({ ...courseInfo, name: e.target.value })
             }
             id="name"
-            placeholder="MERN Stack LMS Platform with Next 13"
-            className={`${styles.input}`}
+            placeholder="MERN stack LMS platform with next 13"
+            className={`
+            ${styles.input}`}
           />
         </div>
         <br />
@@ -94,7 +97,7 @@ const CourseInformation: FC<Props> = ({
             id=""
             cols={30}
             rows={8}
-            placeholder="Write Something Amazing"
+            placeholder="Write something amazing..."
             className={`${styles.input} !h-min !py-2`}
             value={courseInfo.description}
             onChange={(e: any) =>
@@ -116,12 +119,13 @@ const CourseInformation: FC<Props> = ({
               }
               id="price"
               placeholder="29"
-              className={`${styles.input}`}
+              className={`
+            ${styles.input}`}
             />
           </div>
           <div className="w-[50%]">
             <label className={`${styles.label} w-[50%]`}>
-              Estimated Price (Optional)
+              Estimated Price (optional)
             </label>
             <input
               type="number"
@@ -132,27 +136,59 @@ const CourseInformation: FC<Props> = ({
               }
               id="price"
               placeholder="79"
-              className={`${styles.input}`}
+              className={`
+            ${styles.input}`}
             />
           </div>
         </div>
         <br />
-        <div>
-          <label className={`${styles.label}`} htmlFor="email">
-            Course Tags
-          </label>
-          <input
-            type="text"
-            required
-            name=""
-            value={courseInfo.tags}
-            onChange={(e: any) =>
-              setCourseInfo({ ...courseInfo, tags: e.target.value })
-            }
-            id="tags"
-            placeholder="MERN, Next13, SocketIO, Tailwind CSS, LMS"
-            className={`${styles.input}`}
-          />
+        <div className="w-full flex justify-between">
+          <div className="w-[45%]">
+            <label className={`${styles.label}`} htmlFor="email">
+              Course Tags
+            </label>
+            <input
+              type="text"
+              required
+              name=""
+              value={courseInfo.tags}
+              onChange={(e: any) =>
+                setCourseInfo({ ...courseInfo, tags: e.target.value })
+              }
+              id="tags"
+              placeholder="MERN,Next 13,Socket io,tailwind css,LMS"
+              className={`
+            ${styles.input}`}
+            />
+          </div>
+          <div className="w-[50%]">
+            <label className={`${styles.label} w-[50%]`}>
+              Course Categories
+            </label>
+            <select
+              name=""
+              id=""
+              className={`${styles.input}`}
+              value={courseInfo.category}
+              onChange={(e: any) =>
+                setCourseInfo({ ...courseInfo, categories: e.target.value })
+              }
+            >
+              <option className="bg-[black]" value="">
+                Select Category
+              </option>
+              {categories &&
+                categories.map((item: any) => (
+                  <option
+                    className="bg-[black]"
+                    value={item.title}
+                    key={item._id}
+                  >
+                    {item.title}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
         <br />
         <div className="w-full flex justify-between">
@@ -167,12 +203,13 @@ const CourseInformation: FC<Props> = ({
                 setCourseInfo({ ...courseInfo, level: e.target.value })
               }
               id="level"
-              placeholder="Beginner / Intermediate / Expert"
-              className={`${styles.input}`}
+              placeholder="Beginner/Intermediate/Expert"
+              className={`
+            ${styles.input}`}
             />
           </div>
           <div className="w-[50%]">
-            <label className={`${styles.label} w-[50%]`}>Demo URL</label>
+            <label className={`${styles.label} w-[50%]`}>Demo Url</label>
             <input
               type="text"
               name=""
@@ -183,7 +220,8 @@ const CourseInformation: FC<Props> = ({
               }
               id="demoUrl"
               placeholder="eer74fd"
-              className={`${styles.input}`}
+              className={`
+            ${styles.input}`}
             />
           </div>
         </div>
@@ -191,7 +229,7 @@ const CourseInformation: FC<Props> = ({
         <div className="w-full">
           <input
             type="file"
-            accept="/*"
+            accept="image/*"
             id="file"
             className="hidden"
             onChange={handleFileChange}
@@ -209,11 +247,11 @@ const CourseInformation: FC<Props> = ({
               <img
                 src={courseInfo.thumbnail}
                 alt=""
-                className="max-h-full w-full object-over"
+                className="max-h-full w-full object-cover"
               />
             ) : (
               <span className="text-black dark:text-white">
-                Drag and Drop your Thumbnail Here or Click to Browse.
+                Drag and drop your thumbnail here or click to browse
               </span>
             )}
           </label>

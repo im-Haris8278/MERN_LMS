@@ -408,13 +408,17 @@ export const getAllUsersByAdmin = catchAsyncErrors(
 export const updateUserRole = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { id, role } = req.body;
-      const user = await userModel.findById(id);
-      if (!user) {
-        return next(new ErrorHandler("User not found", 400));
+      const { email, role } = req.body;
+      const isUserExist = await userModel.findOne({ email });
+      if (isUserExist) {
+        const id = isUserExist._id;
+        updateUserRoleService(res, next, id, role);
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "User not found",
+        });
       }
-
-      updateUserRoleService(id, role, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }

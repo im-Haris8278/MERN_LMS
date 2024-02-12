@@ -1,7 +1,7 @@
 import { styles } from "@/app/styles/style";
-import { AddCircle } from "@mui/icons-material";
 import React, { FC } from "react";
-import toast from "react-hot-toast";
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import { toast } from "react-hot-toast";
 
 type Props = {
   benefits: { title: string }[];
@@ -30,7 +30,7 @@ const CourseData: FC<Props> = ({
     setBenefits([...benefits, { title: "" }]);
   };
 
-  const handlePrerequisiteChange = (index: number, value: any) => {
+  const handlePrerequisitesChange = (index: number, value: any) => {
     const updatedPrerequisites = [...prerequisites];
     updatedPrerequisites[index].title = value;
     setPrerequisites(updatedPrerequisites);
@@ -51,15 +51,15 @@ const CourseData: FC<Props> = ({
     ) {
       setActive(active + 1);
     } else {
-      toast.error("Please Fill all Fields to go Next.");
+      toast.error("Please fill the fields for go to next!");
     }
   };
 
   return (
     <div className="w-[80%] m-auto mt-24 block">
       <div>
-        <label htmlFor="email" className={`${styles.label} text-[20px]`}>
-          What are the Benefits for Students in this Course ?
+        <label className={`${styles.label} text-[20px]`} htmlFor="email">
+          What are the benefits for students in this course?
         </label>
         <br />
         {benefits.map((benefit: any, index: number) => (
@@ -67,39 +67,37 @@ const CourseData: FC<Props> = ({
             type="text"
             key={index}
             name="Benefit"
-            placeholder="You will be able to Build a Full Stack LMS Platform."
+            placeholder="You will be able to build a full stack LMS Platform..."
             required
             className={`${styles.input} my-2`}
             value={benefit.title}
-            onChange={(e: any) => handleBenefitChange(index, e.target.value)}
+            onChange={(e) => handleBenefitChange(index, e.target.value)}
           />
         ))}
-        <AddCircle
+        <AiOutlinePlusCircle
           style={{ margin: "10px 0px", cursor: "pointer", width: "30px" }}
           onClick={handleAddBenefit}
         />
       </div>
 
       <div>
-        <label htmlFor="email" className={`${styles.label} text-[20px]`}>
-          What are the Prerequisites for Starting this Course ?
+        <label className={`${styles.label} text-[20px]`} htmlFor="email">
+          What are the prerequisites for starting this course?
         </label>
         <br />
         {prerequisites.map((prerequisites: any, index: number) => (
           <input
             type="text"
             key={index}
-            name="Prerequisites"
-            placeholder="You need Basic Knowledge of MERN Stack."
+            name="prerequisites"
+            placeholder="You need basic knowledge of MERN stack"
             required
             className={`${styles.input} my-2`}
             value={prerequisites.title}
-            onChange={(e: any) =>
-              handlePrerequisiteChange(index, e.target.value)
-            }
+            onChange={(e) => handlePrerequisitesChange(index, e.target.value)}
           />
         ))}
-        <AddCircle
+        <AiOutlinePlusCircle
           style={{ margin: "10px 0px", cursor: "pointer", width: "30px" }}
           onClick={handleAddPrerequisites}
         />
@@ -107,7 +105,7 @@ const CourseData: FC<Props> = ({
       <div className="w-full flex items-center justify-between">
         <div
           className="w-full 800px:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] text-center text-[#fff] rounded mt-8 cursor-pointer"
-          onClick={() => prevButton}
+          onClick={() => prevButton()}
         >
           Prev
         </div>

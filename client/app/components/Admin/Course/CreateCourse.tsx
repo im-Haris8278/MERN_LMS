@@ -5,9 +5,9 @@ import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
 import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview";
-import { useCreateCourseMutation } from "@/redux/features/courses/coursesApi";
+import { useCreateCourseMutation } from "../../../../redux/features/courses/coursesApi";
+import { toast } from "react-hot-toast";
 import { redirect } from "next/navigation";
-import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -17,7 +17,7 @@ const CreateCourse = (props: Props) => {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Course Created Successfully");
+      toast.success("Course created successfully");
       redirect("/admin/courses");
     }
     if (error) {
@@ -36,6 +36,7 @@ const CreateCourse = (props: Props) => {
     estimatedPrice: "",
     tags: "",
     level: "",
+    categories: "",
     demoUrl: "",
     thumbnail: "",
   });
@@ -47,6 +48,7 @@ const CreateCourse = (props: Props) => {
       title: "",
       description: "",
       videoSection: "Untitled Section",
+      videoLength: "",
       links: [
         {
           title: "",
@@ -56,11 +58,12 @@ const CreateCourse = (props: Props) => {
       suggestion: "",
     },
   ]);
+
   const [courseData, setCourseData] = useState({});
 
   const handleSubmit = async () => {
-    const formattedBenefits = benefits.map((benefits) => ({
-      title: benefits.title,
+    const formattedBenefits = benefits.map((benefit) => ({
+      title: benefit.title,
     }));
 
     const formattedPrerequisites = prerequisites.map((prerequisite) => ({
@@ -72,6 +75,7 @@ const CreateCourse = (props: Props) => {
         videoUrl: courseContent.videoUrl,
         title: courseContent.title,
         description: courseContent.description,
+        videoLength: courseContent.videoLength,
         videoSection: courseContent.videoSection,
         links: courseContent.links.map((link) => ({
           title: link.title,
@@ -84,24 +88,23 @@ const CreateCourse = (props: Props) => {
     const data = {
       name: courseInfo.name,
       description: courseInfo.description,
+      categories: courseInfo.categories,
       price: courseInfo.price,
       estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
+      thumbnail: courseInfo.thumbnail,
       level: courseInfo.level,
       demoUrl: courseInfo.demoUrl,
-      thumbnail: courseInfo.thumbnail,
+      totalVideos: courseContentData.length,
       benefits: formattedBenefits,
       prerequisites: formattedPrerequisites,
-      courseContentData: formattedCourseContentData,
-      totalVideos: courseContentData.length,
+      courseData: formattedCourseContentData,
     };
-
     setCourseData(data);
   };
 
   const handleCourseCreate = async (e: any) => {
     const data = courseData;
-
     if (!isLoading) {
       await createCourse(data);
     }

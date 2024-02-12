@@ -16,12 +16,12 @@ const page = (props: Props) => {
           description="LMS is a platform for students to learn and get help from teachers"
           keywords="Programming, MERN, Typescript, Redux"
         />
-        <div className="flex h-[200vh]">
+        <div className="flex h-[100vh] overflow-hidden">
           <div className="1500px:w-[16px] w-1/5">
             <AdminSidebar />
           </div>
-          <div className="w-[85%]">
-            <DashboardHero />
+          <div className="w-full">
+            <DashboardHero isDashboard={true} />
           </div>
         </div>
       </AdminProtected>

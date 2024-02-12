@@ -1,7 +1,7 @@
 import React, { FC } from "react";
-import CoursePlayer from "@/app/utils/CoursePlayer";
-import { styles } from "@/app/styles/style";
-import Ratings from "@/app/utils/Ratings";
+import CoursePlayer from "../../../utils/CoursePlayer";
+import { styles } from "../../../../app/styles/style";
+import Ratings from "../../../../app/utils/Ratings";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
 
 type Props = {
@@ -124,7 +124,6 @@ const CoursePreview: FC<Props> = ({
         ))}
         <br />
         <br />
-        {/* course description */}
         <div className="w-full">
           <h1 className="text-[25px] font-Poppins font-[600]">
             Course Details

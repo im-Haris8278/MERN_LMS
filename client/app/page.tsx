@@ -1,9 +1,9 @@
 "use client";
-
-import { FC, useState } from "react";
+import React, { FC, useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Route/Hero";
 import Headings from "./utils/Heading";
+import Courses from "./components/Route/Courses";
 
 interface Props {}
 
@@ -13,7 +13,7 @@ const Page: FC<Props> = (props) => {
   const [route, setRoute] = useState("Login");
 
   return (
-    <div>
+    <div className="h-[100vh] overflow-y-hidden">
       <Headings
         title="LMS"
         description="LMS is a platform for students to learn and get help from teachers"
@@ -27,6 +27,7 @@ const Page: FC<Props> = (props) => {
         route={route}
       />
       <Hero />
+      <Courses />
     </div>
   );
 };

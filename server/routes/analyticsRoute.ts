@@ -9,21 +9,21 @@ import { updateAccessToken } from "../controllers/userController";
 
 const analyticsRouter = express.Router();
 analyticsRouter.get(
-  "/analytics-users",
+  "/get-users-analytics",
   updateAccessToken,
   isAuthenticated,
   authorizeRole("admin"),
   getAnalyticsUsers
 );
 analyticsRouter.get(
-  "/analytics-courses",
+  "/get-courses-analytics",
   updateAccessToken,
   isAuthenticated,
   authorizeRole("admin"),
   getAnalyticsCourses
 );
 analyticsRouter.get(
-  "/analytics-orders",
+  "/get-orders-analytics",
   updateAccessToken,
   isAuthenticated,
   authorizeRole("admin"),

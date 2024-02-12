@@ -8,6 +8,7 @@ import { authorizeRole, isAuthenticated } from "../middleware/auth";
 import { updateAccessToken } from "../controllers/userController";
 
 const layoutRouter = express.Router();
+
 layoutRouter.post(
   "/create-layout",
   updateAccessToken,
@@ -15,6 +16,7 @@ layoutRouter.post(
   authorizeRole("admin"),
   createLayout
 );
+
 layoutRouter.put(
   "/update-layout",
   updateAccessToken,
@@ -22,6 +24,7 @@ layoutRouter.put(
   authorizeRole("admin"),
   updateLayout
 );
-layoutRouter.get("/get-layout", getLayoutByType);
+
+layoutRouter.get("/get-layout/:type", updateAccessToken, getLayoutByType);
 
 export default layoutRouter;
