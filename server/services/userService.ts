@@ -1,6 +1,7 @@
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import userModel from "../models/userModel";
 import { redis } from "../utils/redis";
+import ErrorHandler from "../utils/ErrorHandler";
 
 // get user by id
 export const getUserById = async (id: string, res: Response) => {
@@ -27,14 +28,18 @@ export const getAllUsersService = async (res: Response) => {
 
 // update user role
 export const updateUserRoleService = async (
+  res: Response,
+  next: NextFunction,
   id: string,
-  role: string,
-  res: Response
+  role: string
 ) => {
   const user = await userModel.findByIdAndUpdate(id, { role }, { new: true });
-
-  res.status(200).json({
+  res.status(201).json({
     success: true,
     user,
   });
+  try {
+  } catch (error: any) {
+    return next(new ErrorHandler(error.message, 400));
+  }
 };

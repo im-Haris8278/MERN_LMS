@@ -40,21 +40,21 @@ userRouter.put(
 );
 
 userRouter.put(
-  "/update-password",
+  "/update-user-password",
   updateAccessToken,
   isAuthenticated,
   updatePassword
 );
 
 userRouter.put(
-  "/update-avatar",
+  "/update-user-avatar",
   updateAccessToken,
   isAuthenticated,
   updateAvatar
 );
 
 userRouter.get(
-  "/get-all-users",
+  "/get-users",
   updateAccessToken,
   isAuthenticated,
   authorizeRole("admin"),
@@ -62,7 +62,7 @@ userRouter.get(
 );
 
 userRouter.put(
-  "/update-user-role",
+  "/update-user",
   updateAccessToken,
   isAuthenticated,
   authorizeRole("admin"),

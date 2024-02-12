@@ -11,6 +11,7 @@ import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
 import axios from "axios";
+import CourseModel from "../models/courseModel";
 
 // Upload new course
 export const uploadCourse = catchAsyncErrors(
@@ -43,9 +44,15 @@ export const editCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = req.body;
+
       const thumbnail = data.thumbnail;
-      if (thumbnail) {
-        await cloudinary.v2.uploader.destroy(thumbnail.public_id);
+
+      const courseId = req.params.id;
+
+      const courseData = (await CourseModel.findById(courseId)) as any;
+
+      if (thumbnail && !thumbnail.startsWith("https")) {
+        await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
 
         const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
           folder: "courses",
@@ -57,19 +64,28 @@ export const editCourse = catchAsyncErrors(
         };
       }
 
-      const courseId = req.params.id;
-      const course = await courseModel.findByIdAndUpdate(
+      if (thumbnail.startsWith("https")) {
+        data.thumbnail = {
+          public_id: courseData?.thumbnail.public_id,
+          url: courseData?.thumbnail.url,
+        };
+      }
+
+      const course = await CourseModel.findByIdAndUpdate(
         courseId,
-        { $set: data },
+        {
+          $set: data,
+        },
         { new: true }
       );
 
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7days
       res.status(201).json({
         success: true,
-        course: course,
+        course,
       });
     } catch (error: any) {
-      return next(new ErrorHandler(error.message, 400));
+      return next(new ErrorHandler(error.message, 500));
     }
   }
 );
