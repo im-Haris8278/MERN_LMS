@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import {
   useEditLayoutMutation,
@@ -9,14 +8,11 @@ import { styles } from "@/app/styles/style";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { toast } from "react-hot-toast";
-=======
 import React from "react";
->>>>>>> 9687502dee394ee47103ce233e53c8a91b8ec204
 
 type Props = {};
 
 const EditCategories = (props: Props) => {
-<<<<<<< HEAD
   const { data, isLoading, refetch } = useGetHeroDataQuery("Categories", {
     refetchOnMountOrArgChange: true,
   });
@@ -142,9 +138,7 @@ const EditCategories = (props: Props) => {
       )}
     </>
   );
-=======
   return <div>EditCategories</div>;
->>>>>>> 9687502dee394ee47103ce233e53c8a91b8ec204
 };
 
 export default EditCategories;
